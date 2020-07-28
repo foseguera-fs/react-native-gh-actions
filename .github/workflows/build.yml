@@ -34,7 +34,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ APP_NAME }}-v${{ steps.package-version.outputs.current-version}}.apk
+          name: app-release-v${{ steps.package-version.outputs.current-version }}.apk
           path: android/app/build/outputs/apk/release/*.apk
-        env:
-          APP_NAME: app-release
