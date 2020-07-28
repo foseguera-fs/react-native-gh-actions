@@ -27,7 +27,8 @@ jobs:
         run: |
           chmod +x android/gradlew
           cd android
-          sh gradlew assembleRelease
+          sh gradlew
+          # sh gradlew assembleRelease
     - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
