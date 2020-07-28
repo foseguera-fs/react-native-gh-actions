@@ -28,7 +28,7 @@ jobs:
           cd android
           chmod +x gradlew
           sh gradlew assembleRelease
-          ls -R android/app/build/outputs/apk/release
+          ls -R app/build/outputs/apk/release
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
