@@ -24,8 +24,10 @@ jobs:
       - run: |
           npm install
       - name: Building Android
-        run: chmod +x ./android/gradlew
-        run: cd android && ./gradlew assembleRelease
+        run: |
+          chmod +x ./android/gradlew
+          cd android
+          sh ./gradlew assembleRelease
     - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
