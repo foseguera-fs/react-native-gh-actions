@@ -12,16 +12,6 @@ env:
 
 jobs:
 
-  variables:
-    name: Variables test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Get variables
-        run: |
-          echo ${{ env.PROJECT_APP_NAME }}-${{ env.BUILDING_APP_NAME }}
-
   # android:
   #   name: Publish Android
   #   runs-on: ubuntu-latest
@@ -48,39 +38,39 @@ jobs:
   #     - name: Upload Artifact
   #       uses: actions/upload-artifact@v2
   #       with:
-  #         name: app-release-v${{ steps.package-version.outputs.current-version }}.apk
+  #         name: ${{ env.BUILDING_APP_NAME }}-android-v${{ steps.package-version.outputs.current-version }}.apk
   #         path: android/app/build/outputs/apk/release/*.apk
 
-  # ios:
-  #   name: Publish iOS
-  #   runs-on: macos-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [12.x]
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-  #     - name: Use Node ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #     - run: |
-  #         npm install
-  #     - name: Install pod dependencies
-  #       run: |
-  #         cd ios && pod install
-  #     - name: Building iOS
-  #       run: |
-  #         ls       
-  #         xcodebuild -workspace ./ios/testing_project.xcworkspace -scheme testing_project archive -archivePath ./ios/testing_project.xcarchive -allowProvisioningUpdates
-  #         xcodebuild -exportArchive -archivePath ./ios/testing_project.xcarchive -exportPath . -exportOptionsPlist testing_project/Info.plist
-  #         mv testing_project.ipa ../testing_project.ipa
-  #     - name: Get app version
-  #       id: package-version
-  #       uses: martinbeentjes/npm-get-version-action@master
-  #     - name: Upload Artifact
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: app-release-v${{ steps.package-version.outputs.current-version }}.ipa
-  #         path: ios/build/
+  ios:
+    name: Publish iOS
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: |
+          npm install
+      - name: Install pod dependencies
+        run: |
+          cd ios && pod install
+      - name: Building iOS
+        run: |
+          ls       
+          xcodebuild -workspace ./ios/${{ env.PROJECT_APP_NAME }}.xcworkspace -scheme ${{ env.PROJECT_APP_NAME }} archive -archivePath ./ios/${{ env.PROJECT_APP_NAME }}.xcarchive -allowProvisioningUpdates
+          xcodebuild -exportArchive -archivePath ./ios/${{ env.PROJECT_APP_NAME }}.xcarchive -exportPath . -exportOptionsPlist ${{ env.PROJECT_APP_NAME }}/Info.plist
+          mv ${{ env.PROJECT_APP_NAME }}.ipa ../${{ env.PROJECT_APP_NAME }}.ipa
+      - name: Get app version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.BUILDING_APP_NAME }}-ios-v${{ steps.package-version.outputs.current-version }}.ipa
+          path: ios/build/
 
